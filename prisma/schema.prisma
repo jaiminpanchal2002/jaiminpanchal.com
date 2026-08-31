@@ -1,0 +1,364 @@
+// Portfolio + CMS + Job-intelligence data model.
+//
+// Dev uses SQLite (zero-setup). The schema is deliberately Postgres-portable:
+// no enums (status fields are strings with documented allowed values) and no
+// scalar lists. Arrays/objects are stored as JSON strings (SQLite has no Json
+// type) — use the helpers in src/lib/json.ts to read/write them. To move to
+// Postgres, switch the provider below (and optionally promote these to Json).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Auth
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         String   @default("admin") // admin
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  activity ActivityLog[]
+}
+
+// ---------------------------------------------------------------------------
+// Portfolio content (CMS-driven)
+// ---------------------------------------------------------------------------
+
+model Profile {
+  id           String  @id @default(cuid())
+  name         String
+  title        String
+  roles        String? // JSON string[] — rotating hero titles
+  tagline      String?
+  bio          String?
+  longBio      String?
+  location     String?
+  email        String?
+  phone        String?
+  avatarUrl    String?
+  resumeUrl    String?
+  availability String? // available | open | unavailable
+  updatedAt    DateTime @updatedAt
+
+  socials SocialLink[]
+}
+
+model SocialLink {
+  id        String  @id @default(cuid())
+  platform  String
+  url       String
+  icon      String?
+  order     Int     @default(0)
+  profileId String?
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
+}
+
+model Experience {
+  id            String   @id @default(cuid())
+  company       String
+  position      String
+  period        String?  // display label e.g. "2023 — Present"
+  employmentType String? // full-time | contract | freelance | internship
+  location      String?
+  startDate     DateTime?
+  endDate       DateTime?
+  current       Boolean  @default(false)
+  description   String?
+  achievements  String?    // string[]
+  technologies  String?    // string[]
+  logoUrl       String?
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Education {
+  id          String    @id @default(cuid())
+  institution String
+  degree      String
+  field       String?
+  period      String?   // display label e.g. "2019 — 2023"
+  startDate   DateTime?
+  endDate     DateTime?
+  description String?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model SkillCategory {
+  id     String  @id @default(cuid())
+  name   String
+  order  Int     @default(0)
+  skills Skill[]
+}
+
+model Skill {
+  id         String @id @default(cuid())
+  name       String
+  level      Int?   // optional 0-100, used sparingly
+  iconUrl    String?
+  order      Int    @default(0)
+  categoryId String?
+  category   SkillCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+}
+
+model ProjectCategory {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  projects Project[]
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  summary      String?
+  description  String?
+  problem      String?
+  solution     String?
+  role         String?
+  technologies String?    // string[]
+  features     String?    // string[]
+  images       String?    // string[]
+  coverUrl     String?
+  githubUrl    String?
+  liveUrl      String?
+  isAiProject  Boolean  @default(false)
+  featured     Boolean  @default(false)
+  published    Boolean  @default(true)
+  order        Int      @default(0)
+  date         DateTime?
+  categoryId   String?
+  category     ProjectCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model BlogPost {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  title        String
+  excerpt      String?
+  content      String?
+  coverUrl     String?
+  tags         String?     // string[]
+  category     String?
+  author       String?
+  readingTime  Int?
+  status       String    @default("draft") // draft | published
+  seoTitle     String?
+  seoDescription String?
+  publishedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime?
+  iconUrl     String?
+  order       Int      @default(0)
+}
+
+model Certification {
+  id           String    @id @default(cuid())
+  name         String
+  issuer       String?
+  issueDate    DateTime?
+  credentialUrl String?
+  order        Int       @default(0)
+}
+
+model Service {
+  id          String @id @default(cuid())
+  number      String
+  name        String
+  description String
+  order       Int    @default(0)
+}
+
+model Testimonial {
+  id       String  @id @default(cuid())
+  author   String
+  role     String?
+  company  String?
+  quote    String
+  avatarUrl String?
+  order    Int     @default(0)
+}
+
+model Resume {
+  id         String   @id @default(cuid())
+  name       String
+  version    String?
+  targetRole String?
+  fileUrl    String?
+  summary    String?
+  content    String?  // full resume text (for ATS analysis)
+  skills     String?    // string[]
+  status     String   @default("active") // active | archived
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  applications JobApplication[]
+  analyses     ATSAnalysis[]
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  status    String   @default("unread") // unread | read | archived
+  createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id             String  @id @default("singleton")
+  siteName       String?
+  seoTitle       String?
+  seoDescription String?
+  ogImageUrl     String?
+  primaryColor   String?
+  updatedAt      DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Job intelligence
+// ---------------------------------------------------------------------------
+
+model Job {
+  id             String   @id @default(cuid())
+  title          String
+  company        String
+  companyLogoUrl String?
+  url            String?
+  source         String?  // linkedin | apify | manual | ...
+  location       String?
+  workMode       String?  // remote | hybrid | onsite
+  salary         String?
+  description    String?
+  skills         String?    // string[]
+  matchScore     Int?
+  matchReasons   String?    // { skill, experience, role, location }
+  postedAt       DateTime?
+  discoveredAt   DateTime @default(now())
+  status         String   @default("new") // new | saved | ignored | applied
+
+  applications JobApplication[]
+  analyses     ATSAnalysis[]
+}
+
+model JobApplication {
+  id             String    @id @default(cuid())
+  company        String
+  jobTitle       String
+  jobUrl         String?
+  source         String?
+  location       String?
+  workMode       String?
+  salary         String?
+  status         String    @default("Saved") // Saved | Interested | Applied | Recruiter Contacted | Screening | Technical Interview | HR Interview | Final Interview | Offer | Rejected | Withdrawn
+  priority       String?   // low | medium | high
+  tags           String?     // string[]
+  notes          String?
+  recruiter      String?
+  recruiterContact String?
+  coverLetter    String?
+  followUpDate   DateTime?
+  dateDiscovered DateTime  @default(now())
+  dateApplied    DateTime?
+  order          Int       @default(0)
+  jobId          String?
+  job            Job?      @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  resumeId       String?
+  resume         Resume?   @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  interviews Interview[]
+}
+
+model Interview {
+  id            String   @id @default(cuid())
+  stage         String   // screening | technical | hr | final
+  scheduledAt   DateTime?
+  notes         String?
+  outcome       String?  // pending | passed | failed
+  applicationId String
+  application   JobApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model ATSAnalysis {
+  id              String   @id @default(cuid())
+  score           Int
+  keywordMatch    Int?
+  skillsMatch     Int?
+  experienceMatch Int?
+  missingKeywords String?    // string[]
+  missingSkills   String?    // string[]
+  recommendations String?    // string[]
+  summary         String?
+  resumeId        String?
+  resume          Resume?  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  jobId           String?
+  job             Job?     @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  createdAt       DateTime @default(now())
+}
+
+model Building {
+  id          String   @id @default(cuid())
+  title       String
+  status      String   @default("Building") // Planning | Building | Testing | Live
+  progress    Int      @default(0)
+  description String?
+  tech        String?  // string[]
+  link        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model JourneyStep {
+  id    String @id @default(cuid())
+  step  String
+  note  String?
+  order Int    @default(0)
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  type      String   // page_view | resume_view | project_open | resume_download | contact_submit | external_link
+  path      String?
+  meta      String?  // JSON
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  type      String   // e.g. project.created, application.moved, message.received
+  message   String
+  meta      String?
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+}

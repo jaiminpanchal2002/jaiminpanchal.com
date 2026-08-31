@@ -1,0 +1,248 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: #0c0c0c;
+}
+
+body {
+  font-family: var(--font-kanit), "Kanit", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Infinite tech marquee (CSS-driven, seamless -50% loop). */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+.animate-marquee-reverse {
+  animation: marquee-reverse 40s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none;
+  }
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Animated metallic shimmer for the hero name. */
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+.hero-shimmer {
+  background: linear-gradient(
+    110deg,
+    #5a606b 0%,
+    #bbccd7 28%,
+    #ffffff 50%,
+    #bbccd7 72%,
+    #5a606b 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: shimmer 7s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-shimmer {
+    animation: none;
+  }
+}
+
+/* Design tokens (deliberate dark-first palette + craft easing curves). */
+:root {
+  --ink: #0c0c0c;
+  --surface: #141419;
+  --surface-2: #1a1a22;
+  --mist: #e6ecf2;
+  --muted: #8a93a3;
+  --line: rgba(230, 236, 242, 0.09);
+  --accent: #c81fb4;
+  /* Strong easing (built-in CSS easings are too weak). */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Pressable elements should feel like they hear the click. */
+@media (hover: hover) and (pointer: fine) {
+  a[data-press],
+  button[data-press] {
+    transition: transform 160ms var(--ease-out);
+  }
+  a[data-press]:active,
+  button[data-press]:active {
+    transform: scale(0.97);
+  }
+}
+
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+/* Terminal-style section eyebrow. */
+.eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 1.5rem;
+  height: 1px;
+  background: var(--accent);
+  display: inline-block;
+}
+
+/* Ambient dotted grid + soft radial orbs for section depth. */
+.grid-atmosphere {
+  background-image: radial-gradient(
+    rgba(230, 236, 242, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 34px 34px;
+}
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+.animate-float {
+  animation: float-slow 7s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-float {
+    animation: none;
+  }
+}
+
+/* Gradient hero/section heading text. */
+.hero-heading {
+  background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Accessibility: visible focus ring and skip-to-content link. */
+:focus-visible {
+  outline: 2px solid #b600a8;
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -4rem;
+  z-index: 10001;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #0c0c0c;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Custom cursor (desktop, fine-pointer only — mounted by CustomCursor.tsx). */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 9999px;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: #ffffff;
+}
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid #ffffff;
+  transition: width 0.2s ease, height 0.2s ease, margin 0.2s ease,
+    background-color 0.2s ease;
+}
+:root[data-cursor-hover="1"] .cursor-ring {
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
