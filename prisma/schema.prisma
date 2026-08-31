@@ -7,7 +7,9 @@
 // Postgres, switch the provider below (and optionally promote these to Json).
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // Include the Linux engine Vercel's runtime needs (plus local "native").
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
