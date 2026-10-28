@@ -45,6 +45,16 @@ describe("CMS content model", () => {
     expect(rich.of.some((m) => /html|script/i.test(m.name ?? m.type))).toBe(false);
   });
 
+  it("only assigns fields to groups (tabs) the type defines", () => {
+    for (const t of all) {
+      const groups = new Set(((t as unknown as { groups?: { name: string }[] }).groups ?? []).map((g) => g.name));
+      for (const f of t.fields ?? []) {
+        const g = (f as Field & { group?: string }).group;
+        if (g) expect(groups.has(g), `${t.name}.${f.name} -> group "${g}"`).toBe(true);
+      }
+    }
+  });
+
   it("registers singletons that exist as document types", () => {
     for (const s of singletonTypes) expect(byName.get(s)?.type).toBe("document");
   });

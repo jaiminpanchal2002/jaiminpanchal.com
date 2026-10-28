@@ -8,8 +8,9 @@ const groups = [
   { name: "publishing", title: "Publishing" },
 ];
 
-const slugField = (source = "title") =>
-  defineField({ name: "slug", type: "slug", options: { source, maxLength: 96 }, validation: (r) => r.required(), group: "content" });
+// Types with field groups pass "content"; simple taxonomy types have no groups.
+const slugField = (group?: string) =>
+  defineField({ name: "slug", type: "slug", options: { source: "title", maxLength: 96 }, validation: (r) => r.required(), ...(group ? { group } : {}) });
 
 export const project = defineType({
   name: "project",
@@ -18,7 +19,7 @@ export const project = defineType({
   groups,
   fields: [
     defineField({ name: "title", type: "string", group: "content", validation: (r) => r.required() }),
-    slugField(),
+    slugField("content"),
     defineField({ name: "summary", type: "text", rows: 2, group: "content", validation: (r) => r.required().max(220) }),
     defineField({ name: "category", type: "reference", to: [{ type: "projectCategory" }], group: "content" }),
     defineField({ name: "projectType", type: "string", group: "content", options: { list: ["client", "product", "internal", "personal", "open-source"] }, initialValue: "product" }),
@@ -86,7 +87,7 @@ export const caseStudy = defineType({
   groups,
   fields: [
     defineField({ name: "title", type: "string", group: "content", validation: (r) => r.required() }),
-    slugField(),
+    slugField("content"),
     defineField({ name: "template", type: "string", group: "content", options: { list: [{ title: "Engineering", value: "engineering" }, { title: "Product delivery", value: "product-delivery" }], layout: "radio" }, initialValue: "engineering" }),
     defineField({ name: "project", title: "Associated project", type: "reference", to: [{ type: "project" }], group: "content" }),
     defineField({ name: "excerpt", type: "text", rows: 2, group: "content", validation: (r) => r.required().max(240) }),
@@ -138,7 +139,7 @@ export const blogPost = defineType({
   groups,
   fields: [
     defineField({ name: "title", type: "string", group: "content", validation: (r) => r.required() }),
-    slugField(),
+    slugField("content"),
     defineField({ name: "excerpt", type: "text", rows: 2, group: "content", validation: (r) => r.required().max(240) }),
     defineField({ name: "coverImage", type: "accessibleImage", group: "media" }),
     defineField({ name: "author", type: "reference", to: [{ type: "personalProfile" }], group: "content" }),
