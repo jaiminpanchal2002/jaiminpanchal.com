@@ -33,10 +33,24 @@ export default async function AboutPage() {
           <RichText value={profile.bio} className="prose-jp text-[length:var(--step-1)] leading-relaxed" />
         </div>
         <Reveal variant="fade" className="lg:pt-2">
-          {portrait ? (
-            <Image src={portrait} alt={profile.portrait?.alt ?? `Portrait of ${profile.name}`} width={800} height={1000} className="rounded-[var(--radius-xl)] border border-line" sizes="(min-width: 1024px) 35vw, 100vw" />
-          ) : (
-            <div className="grid gap-6 rounded-[var(--radius-xl)] border border-line bg-bg-raised p-8">
+          {/* Profile card: portrait shown at a size the source photo supports (no upscaling blur). */}
+          <div className="grid gap-6 rounded-[var(--radius-xl)] border border-line bg-bg-raised p-8">
+            {portrait && (
+              <div className="flex items-center gap-5">
+                <Image
+                  src={portrait}
+                  alt={profile.portrait?.alt ?? `Portrait of ${profile.name}`}
+                  width={176}
+                  height={176}
+                  priority
+                  className="size-28 rounded-full border border-line-strong object-cover"
+                />
+                <div>
+                  <p className="font-display text-lg font-semibold text-fg">{profile.name}</p>
+                  <p className="text-sm text-fg-2">{profile.title}</p>
+                </div>
+              </div>
+            )}
               <dl className="grid gap-5 text-sm">
                 <div>
                   <dt className="text-fg-3">Based in</dt>
@@ -53,8 +67,18 @@ export default async function AboutPage() {
                   </div>
                 )}
               </dl>
-            </div>
-          )}
+            {profile.socialLinks.length > 0 && (
+              <ul className="flex flex-wrap gap-2 border-t border-line pt-5">
+                {profile.socialLinks.map((s) => (
+                  <li key={s.url}>
+                    <a href={s.url} target="_blank" rel="noopener noreferrer me" className="pressable inline-flex items-center rounded-full border border-line-strong px-4 py-2 text-sm text-fg hover:bg-surface">
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </Reveal>
       </section>
 

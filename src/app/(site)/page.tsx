@@ -44,7 +44,8 @@ export default async function HomePage() {
     : projects.filter((p) => p.featured);
 
   const sections: Record<HomeSectionKey, React.ReactNode> = {
-    story: <Story home={home} portraitUrl={imageUrl(profile.portrait, 700)} portraitAlt={profile.portrait?.alt} />,
+    // The Story stage shows the portrait large, so only use it when the source is big enough.
+    story: <Story home={home} portraitUrl={(profile.portrait?.asset?.metadata?.dimensions?.width ?? 0) >= 600 ? imageUrl(profile.portrait, 900) : null} portraitAlt={profile.portrait?.alt} />,
     experience: (
       <section aria-labelledby="journey-title" className="section-y">
         <div className="container-site grid gap-14 lg:grid-cols-[1fr_1.6fr]">
@@ -71,7 +72,7 @@ export default async function HomePage() {
     <>
       <Intro enabled={settings.introEnabled} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(siteJsonLd(profile))} />
-      <Hero home={home} profile={profile} />
+      <Hero home={home} profile={profile} portraitUrl={imageUrl(profile.portrait, 160)} />
       {home.sections
         .filter((s) => s.visible && s.key in sections)
         .map((s) => (

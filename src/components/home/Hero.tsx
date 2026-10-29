@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { Download } from "lucide-react";
 import { HeroVisual } from "@/components/three/HeroVisual";
@@ -10,7 +11,7 @@ import type { HomePage, Profile } from "@/content/types";
  * Hero: the name as architecture. A full-bleed expanded wordmark sits on the column grid;
  * the glass J/ monogram floats in front of it. All words are real, server-rendered text.
  */
-export function Hero({ home, profile }: { home: HomePage; profile: Profile }) {
+export function Hero({ home, profile, portraitUrl }: { home: HomePage; profile: Profile; portraitUrl?: string | null }) {
   const ref = useRef<HTMLElement>(null);
   const resumeHref = profile.resumeUrl ?? "/resume";
   const first = profile.name.split(" ")[0];
@@ -54,7 +55,12 @@ export function Hero({ home, profile }: { home: HomePage; profile: Profile }) {
             </MagneticButton>
           </div>
           <div className="rise md:col-span-2 md:col-start-3 md:pl-[var(--gutter)]" style={{ "--i": 3 } as React.CSSProperties}>
-            <p className="font-display text-[length:var(--step-1)] font-semibold leading-tight text-fg">{home.heroHeadline.join(" ")}</p>
+            <div className="flex items-center gap-4">
+              {portraitUrl && (
+                <Image src={portraitUrl} alt={profile.portrait?.alt ?? `Portrait of ${profile.name}`} width={112} height={112} priority className="size-14 shrink-0 rounded-full border border-line-strong object-cover" />
+              )}
+              <p className="font-display text-[length:var(--step-1)] font-semibold leading-tight text-fg">{home.heroHeadline.join(" ")}</p>
+            </div>
             <p className="mt-3 max-w-[46ch] text-fg-3">{home.heroSupporting}</p>
           </div>
         </div>

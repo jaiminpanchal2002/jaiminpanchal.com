@@ -23,8 +23,8 @@ describe("publishing gate", () => {
     expect(seed.metrics.every((m) => m.context.length > 0 && m.explanation.length > 0)).toBe(true);
   });
 
-  it("only links to the owner's GitHub and real live URLs", () => {
-    expect(seed.profile.socialLinks.map((s) => s.url)).toEqual(["https://github.com/jaiminpanchal2002"]);
+  it("only links to the owner's own LinkedIn/GitHub and real live URLs", () => {
+    expect(seed.profile.socialLinks.map((s) => s.url)).toEqual(["https://www.linkedin.com/in/jaiminpanchal2002/", "https://github.com/jaiminpanchal2002"]);
     for (const p of seed.projects) {
       if (p.repoUrl) expect(p.repoUrl.startsWith("https://github.com/jaiminpanchal2002/"), p.slug).toBe(true);
     }

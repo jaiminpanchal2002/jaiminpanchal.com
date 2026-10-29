@@ -42,6 +42,15 @@ export function pageMetadata({
 }
 
 const PERSON_ID = () => absoluteUrl("/#person");
+
+/** Profile photo for search engines: the CMS portrait (absolute URL), falling back to the social card. */
+function portraitImage(p: Profile) {
+  const url = imageUrl(p.portrait, 800);
+  if (!url) return absoluteUrl("/opengraph-image");
+  const abs = url.startsWith("http") ? url : absoluteUrl(url);
+  const dim = p.portrait?.asset?.metadata?.dimensions;
+  return { "@type": "ImageObject", url: abs, contentUrl: abs, caption: p.portrait?.alt ?? p.name, ...(dim ? { width: dim.width, height: dim.height } : {}) };
+}
 const WEBSITE_ID = () => absoluteUrl("/#website");
 
 /** The Person entity every page refers to (one @id, so search engines merge it into a single profile). */
@@ -55,7 +64,7 @@ export function personNode(p: Profile) {
     jobTitle: p.title,
     description: p.shortBio,
     url: absoluteUrl("/"),
-    image: absoluteUrl("/opengraph-image"),
+    image: portraitImage(p),
     ...(p.email ? { email: `mailto:${p.email}` } : {}),
     address: { "@type": "PostalAddress", addressLocality: PERSON.city, addressRegion: PERSON.region, addressCountry: PERSON.country },
     homeLocation: { "@type": "Place", name: `${PERSON.city}, ${PERSON.region}, India` },
