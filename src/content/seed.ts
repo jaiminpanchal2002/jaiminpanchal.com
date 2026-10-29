@@ -73,7 +73,7 @@ Outside client work I build in the open: multi-tenant SaaS in TypeScript and Lar
   email: "jaiminmpanchal02@gmail.com",
   availability: "Open to backend, full stack and AI engineering roles and projects.",
   // Fallback when the CMS has no portrait; the CMS copy is uploaded by scripts/set-profile-media.ts
-  portrait: { _type: "image", asset: { url: "/images/jaimin-panchal.png", metadata: { dimensions: { width: 200, height: 200 } } }, alt: "Portrait of Jaimin Panchal" },
+  portrait: { _type: "image", asset: { url: "/images/jaimin-panchal.png", metadata: { dimensions: { width: 400, height: 400 } } }, alt: "Portrait of Jaimin Panchal" },
   resumeUrl: undefined, // upload the PDF in the CMS (Personal profile > Resume)
   socialLinks: [
     { platform: "linkedin", label: "LinkedIn", url: "https://www.linkedin.com/in/jaiminpanchal2002/" },
