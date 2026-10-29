@@ -20,47 +20,74 @@ export const PERSON = {
 export const DEFAULT_TITLE = "Jaimin Panchal | AI Full Stack Developer & Project Manager, Ahmedabad";
 
 export const DEFAULT_DESCRIPTION =
-  "Jaimin Panchal is an AI Full Stack Developer and Project Manager at PrimeQA Solutions in Ahmedabad, India, building web products with Laravel, PHP, Vue.js, React, TypeScript, MySQL and PostgreSQL.";
+  "Jaimin Panchal is an AI Full Stack Developer and backend engineer in Ahmedabad, India. He builds Laravel, Node.js and Python systems: REST APIs, multi-tenant SaaS, fintech integrations, real-time platforms and AI agents.";
 
 /**
  * Search phrases this site should be the answer to. Search engines largely ignore the
  * keywords meta tag; these mainly document intent and feed metadata + JSON-LD knowsAbout.
  */
 export const KEYWORDS = [
+  // Name and brand
   "Jaimin Panchal",
   "Jaimin Panchal developer",
   "Jaimin Panchal portfolio",
+  "Jaimin Panchal Laravel",
   "Jaimin Panchal PrimeQA Solutions",
   "Jaimin Panchal Ahmedabad",
+  "Jaimin Panchal Indus University",
+  "jaiminpanchal2002",
+  // Roles
   "AI Full Stack Developer",
   "AI Full Stack Developer Ahmedabad",
+  "Backend Software Engineer",
+  "Backend developer Ahmedabad",
   "Full Stack Developer Ahmedabad",
   "Full Stack Developer India",
-  "Project Manager Ahmedabad",
   "Laravel developer Ahmedabad",
-  "PHP Laravel developer India",
-  "Vue.js developer",
-  "React developer",
-  "TypeScript developer",
-  "REST API developer",
-  "MySQL PostgreSQL developer",
-  "AI-enabled web applications",
-  "Indus University Computer Science",
+  "Laravel developer India",
+  "PHP Laravel developer",
+  "Freelance Laravel developer",
+  "Hire Laravel developer India",
+  "Node.js developer Ahmedabad",
+  "Python FastAPI developer",
+  // Services and specialities
+  "REST API development",
+  "Multi-tenant SaaS development",
+  "AI integration developer",
+  "LLM RAG developer",
+  "AI agent developer",
+  "Flutter app backend developer",
+  "Stripe PayPal integration developer",
+  "Fintech API integration",
+  "Real-time WebSocket development",
+  "Docker CI/CD GitHub Actions",
+  "Software developer Gujarat",
 ];
 
 export const KNOWS_ABOUT = [
+  "Backend development",
   "Full stack web development",
+  "REST API design",
+  "Multi-tenant SaaS architecture",
   "AI-enabled applications",
-  "Project management",
+  "Retrieval-augmented generation (RAG)",
+  "AI agents and tool calling",
   "PHP",
   "Laravel",
-  "JavaScript",
+  "Node.js",
+  "Next.js",
   "TypeScript",
-  "Vue.js",
-  "React",
+  "JavaScript",
   "Python",
-  "REST APIs",
+  "FastAPI",
+  "Vue.js",
   "MySQL",
   "PostgreSQL",
-  "Software delivery",
+  "Redis",
+  "Docker",
+  "GitHub Actions",
+  "AWS",
+  "Stripe",
+  "WebSockets",
+  "Project management",
 ];

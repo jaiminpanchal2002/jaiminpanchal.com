@@ -195,6 +195,19 @@ export type Post = {
   seo?: Seo;
 };
 
+export type Service = {
+  _id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  description: string;
+  deliverables: string[];
+  technologies: string[];
+  projectSlugs: string[];
+  order: number;
+  seo?: Seo;
+};
+
 export type NowPage = {
   updatedAt: string;
   intro: string;

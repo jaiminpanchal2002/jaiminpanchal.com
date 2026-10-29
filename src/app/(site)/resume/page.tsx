@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Download } from "lucide-react";
 import { PrintButton } from "@/components/ui/PrintButton";
 import { buttonClass } from "@/components/ui/styles";
-import { getEducation, getExperiences, getProfile, getSkills } from "@/content/api";
+import { getCertifications, getEducation, getExperiences, getProfile, getSkills } from "@/content/api";
 import { pageMetadata } from "@/lib/seo";
 import { formatRange } from "@/lib/utils";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = pageMetadata({ title: "Resume", description: "
 
 /** HTML resume generated from CMS data, print-optimised. Uses the uploaded PDF when one exists. */
 export default async function ResumePage() {
-  const [profile, experiences, education, { categories, skills }] = await Promise.all([getProfile(), getExperiences(), getEducation(), getSkills()]);
+  const [profile, experiences, education, certifications, { categories, skills }] = await Promise.all([getProfile(), getExperiences(), getEducation(), getCertifications(), getSkills()]);
   return (
     <div className="container-site max-w-4xl pt-32 pb-[var(--space-section)] print:pt-0">
       <div className="no-print mb-12 flex flex-wrap gap-3">
@@ -78,11 +78,25 @@ export default async function ResumePage() {
             {education.map((e) => (
               <li key={e._id} className="text-fg">
                 {e.degree} in {e.field}, {e.institution}
-                {e.endYear ? `, ${e.endYear}` : ""}
+                {e.endYear ? `, ${e.startYear ? `${e.startYear} - ` : ""}${e.endYear}` : ""}
+                {e.notes ? ` (${e.notes})` : ""}
               </li>
             ))}
           </ul>
         </section>
+        {certifications.length > 0 && (
+          <section>
+            <h2 className="text-sm font-medium uppercase tracking-[0.16em] text-fg-3">Certifications</h2>
+            <ul className="mt-4 grid gap-2">
+              {certifications.map((c) => (
+                <li key={c._id} className="text-fg">
+                  {c.name}, {c.issuer}
+                  {c.issued ? ` (${c.issued})` : ""}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </article>
     </div>
   );

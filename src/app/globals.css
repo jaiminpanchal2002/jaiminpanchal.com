@@ -73,7 +73,7 @@
   --color-success: var(--success);
 
   --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-archivo), ui-sans-serif, sans-serif;
+  --font-display: var(--font-archivo-expanded), var(--font-archivo), ui-sans-serif, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
   /* Radius scale: inputs 10, panels 20, interactive = pill */
@@ -88,12 +88,6 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Display width: Archivo's wdth axis at 125% (expanded) for headings, nav and the wordmark. */
-.font-display,
-.display,
-.wide {
-  font-variation-settings: "wdth" 125;
-}
 
 /* Fluid type scale (clamp between 360px and 1440px viewports) */
 :root {
@@ -393,7 +387,6 @@ html[data-motion="reduced"] *::after {
   margin-top: 1.25em;
 }
 .prose-jp h2 {
-  font-variation-settings: "wdth" 125;
   font-family: var(--font-display);
   color: var(--text);
   font-size: var(--step-3);
@@ -403,7 +396,6 @@ html[data-motion="reduced"] *::after {
   font-weight: 500;
 }
 .prose-jp h3 {
-  font-variation-settings: "wdth" 125;
   font-family: var(--font-display);
   color: var(--text);
   font-size: var(--step-2);

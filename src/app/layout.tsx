@@ -1,10 +1,21 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, KEYWORDS, SITE_URL } from "@/lib/site";
 
-// One family, two widths: Archivo at 125% width for display/nav, 100% for reading.
-const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
+// One family, two widths. Reading text: Archivo (normal width). Display/nav: static expanded
+// instances of Archivo (wdth 125), self-hosted so no browser has to apply a width axis.
+const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo", display: "swap" });
+const archivoExpanded = localFont({
+  src: [
+    { path: "../fonts/archivo-expanded-500.woff2", weight: "500" },
+    { path: "../fonts/archivo-expanded-600.woff2", weight: "600" },
+    { path: "../fonts/archivo-expanded-800.woff2", weight: "800" },
+  ],
+  variable: "--font-archivo-expanded",
+  display: "swap",
+});
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 
@@ -45,7 +56,7 @@ const motionBootScript = `(function(){var d=document.documentElement;d.classList
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning className={`${archivo.variable} ${geistMono.variable}`}>
+    <html lang="en" data-theme="dark" suppressHydrationWarning className={`${archivo.variable} ${archivoExpanded.variable} ${geistMono.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionBootScript }} />
       </head>

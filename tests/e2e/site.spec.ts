@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-const routes = ["/", "/about", "/experience", "/work", "/case-studies", "/skills", "/blog", "/now", "/contact", "/resume", "/universe"];
+const routes = ["/", "/about", "/services", "/services/laravel-php-development", "/experience", "/work", "/case-studies", "/skills", "/blog", "/now", "/contact", "/resume", "/universe"];
 
 // Skip the intro for most tests (it plays once per session on the home page), and use the
 // 3D off (poster still): headless Chrome renders WebGL in software, which starves the main thread.
@@ -42,7 +42,8 @@ test.describe("routes", () => {
   test("project, article and case study templates render", async ({ page }) => {
     await page.goto("/work/spot-it-now");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Spot It Now");
-    await expect(page.getByText("Needs verification").first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Key features" })).toBeVisible();
+    await expect(page.getByText("OTP authentication").first()).toBeVisible();
     await page.goto("/blog/template-sample-article");
     await expect(page.getByRole("button", { name: /copy code/i })).toBeVisible();
     await expect(page.locator('script[type="application/ld+json"]').first()).toBeAttached();
@@ -185,8 +186,21 @@ test.describe("SEO endpoints", () => {
   });
 
   test("unverified pages are marked noindex", async ({ page }) => {
-    await page.goto("/work/spot-it-now");
+    await page.goto("/blog/template-sample-article");
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  });
+
+  test("service pages carry Service structured data and link to proof projects", async ({ page }) => {
+    await page.goto("/services/ai-llm-integration");
+    const ld = await page.locator('script[type="application/ld+json"]').allTextContents();
+    expect(ld.some((t) => t.includes("\"@type\":\"Service\""))).toBe(true);
+    await expect(page.getByRole("link", { name: /Resolve AI/ })).toBeVisible();
+  });
+
+  test("verified projects are indexable and listed in the sitemap", async ({ page, request }) => {
+    await page.goto("/work/feedbackiq");
+    expect(await page.locator('meta[name="robots"]').count()).toBe(0);
+    expect(await (await request.get("/sitemap.xml")).text()).toContain("/work/feedbackiq");
   });
 
   test("security headers are present", async ({ request }) => {

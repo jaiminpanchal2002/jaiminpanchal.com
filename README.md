@@ -34,6 +34,7 @@ With no Sanity project configured the site renders the typed local seed (`src/co
 | `npm run check` | typecheck + lint + unit tests |
 | `npm test` | Vitest unit tests |
 | `npm run test:e2e` | Playwright against `next start -p 3100` (build first) |
+| `npm run seed:push` | Writes the seed (resume + GitHub content) to Sanity with the editor token. `-- --only=service,navigation` limits it to some types. Overwrites Studio edits to those documents |
 | `npm run seed:export` | Writes `seed/initial-content.ndjson` for `sanity dataset import` |
 
 ## Documentation

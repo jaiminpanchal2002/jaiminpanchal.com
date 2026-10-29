@@ -70,7 +70,8 @@ export function Intro({ enabled }: { enabled: boolean }) {
       const start = performance.now();
       const ease = (t: number) => 1 - Math.pow(1 - t, 3);
       const draw = (now: number) => {
-        const t = (now - start) / DURATION;
+        // rAF timestamps can precede the effect's start time on the first frame; clamp so radii never go negative.
+        const t = Math.max(0, (now - start) / DURATION);
         ctx.clearRect(0, 0, w, h);
         // energy point
         const core = Math.min(1, t / 0.15);

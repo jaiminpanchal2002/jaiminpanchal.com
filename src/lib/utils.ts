@@ -3,7 +3,7 @@ import { SITE_URL } from "./site";
 
 export const cn = (...inputs: ClassValue[]) => clsx(inputs);
 
-const monthFmt = new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric", timeZone: "UTC" });
+const monthFmt = new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" }); // "Sep 2026" (en-GB gives "Sept")
 const dayFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
 export function formatMonth(iso?: string) {

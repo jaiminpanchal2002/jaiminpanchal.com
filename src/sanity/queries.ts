@@ -82,6 +82,12 @@ export const metricsQuery = defineQuery(`*[_type == "achievement"] | order(order
   _id, value, prefix, suffix, label, explanation, context, "verified": coalesce(verified, false)
 }`);
 
+export const servicesQuery = defineQuery(`*[_type == "service" && defined(slug.current)] | order(order asc){
+  _id, title, "slug": slug.current, summary, description, "deliverables": coalesce(deliverables, []),
+  "technologies": coalesce(technologies, []), "projectSlugs": coalesce(projects[]->slug.current, []),
+  "order": coalesce(order, 999), ${seo}
+}`);
+
 export const nowPageQuery = defineQuery(`*[_id == "nowPage"][0]{
   "updatedAt": coalesce(updatedAt, _updatedAt), intro, "items": coalesce(items[]{label, body}, []), "verified": coalesce(verified, false)
 }`);

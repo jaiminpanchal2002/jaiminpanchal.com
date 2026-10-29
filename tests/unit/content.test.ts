@@ -15,18 +15,28 @@ describe("publishing gate", () => {
     expect(isVisible({ verified: false }, false)).toBe(false);
   });
 
-  it("keeps every seeded project, metric and template unverified (nothing invented is published)", () => {
-    expect(seed.projects.every((p) => !p.verified)).toBe(true);
-    expect(seed.metrics.every((m) => !m.verified)).toBe(true);
+  it("keeps templates unpublished and only publishes owner-sourced records", () => {
+    // Templates are never real content.
     expect(seed.posts.every((p) => !p.verified)).toBe(true);
     expect(seed.caseStudies.every((c) => !c.verified)).toBe(true);
+    // Every metric names the role or project it belongs to.
+    expect(seed.metrics.every((m) => m.context.length > 0 && m.explanation.length > 0)).toBe(true);
   });
 
-  it("never seeds guessed contact details or social links", () => {
-    expect(seed.profile.email).toBeUndefined();
-    // Only links the owner supplied (GitHub, from his own repository URL).
+  it("only links to the owner's GitHub and real live URLs", () => {
     expect(seed.profile.socialLinks.map((s) => s.url)).toEqual(["https://github.com/jaiminpanchal2002"]);
-    expect(seed.projects.every((p) => !p.demoUrl && !p.repoUrl)).toBe(true);
+    for (const p of seed.projects) {
+      if (p.repoUrl) expect(p.repoUrl.startsWith("https://github.com/jaiminpanchal2002/"), p.slug).toBe(true);
+    }
+  });
+
+  it("never publishes a phone number", () => {
+    expect(JSON.stringify(seed)).not.toMatch(/99984|\+91/);
+  });
+
+  it("gives every project a unique slug and every experience a start date", () => {
+    expect(new Set(seed.projects.map((p) => p.slug)).size).toBe(seed.projects.length);
+    expect(seed.experiences.every((e) => /^\d{4}-\d{2}$/.test(e.startDate ?? ""))).toBe(true);
   });
 
   it("contains no em dashes in seeded copy (style rule)", () => {

@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "seed:export": "tsx scripts/export-seed.ts",
-    "check": "npm run typecheck && npm run lint && npm run test"
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "seed:push": "tsx --env-file=.env.local scripts/push-seed.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

@@ -215,7 +215,7 @@ export const certification = defineType({
   fields: [
     defineField({ name: "name", type: "string", validation: (r) => r.required() }),
     defineField({ name: "issuer", type: "string", validation: (r) => r.required() }),
-    defineField({ name: "issued", type: "date" }),
+    defineField({ name: "issued", title: "Issued (year or month)", type: "string", description: "For example 2026 or Mar 2026" }),
     defineField({ name: "url", title: "Credential URL", type: "url" }),
     defineField({ name: "verified", title: "Facts verified", type: "boolean", initialValue: false }),
   ],
@@ -266,6 +266,25 @@ export const achievement = defineType({
     defineField({ name: "verified", title: "Facts verified", type: "boolean", initialValue: false }),
   ],
   preview: { select: { title: "label", value: "value", suffix: "suffix" }, prepare: ({ title, value, suffix }) => ({ title, subtitle: `${value ?? ""}${suffix ?? ""}` }) },
+});
+
+export const service = defineType({
+  name: "service",
+  title: "Service",
+  type: "document",
+  groups,
+  fields: [
+    defineField({ name: "title", type: "string", group: "content", validation: (r) => r.required() }),
+    slugField("content"),
+    defineField({ name: "summary", type: "text", rows: 2, group: "content", validation: (r) => r.required().max(200) }),
+    defineField({ name: "description", type: "text", rows: 6, group: "content", validation: (r) => r.required() }),
+    defineField({ name: "deliverables", title: "What is included", type: "array", of: [{ type: "string" }], group: "content" }),
+    defineField({ name: "technologies", type: "array", of: [{ type: "string" }], options: { layout: "tags" }, group: "content" }),
+    defineField({ name: "projects", title: "Proof: related projects", type: "array", of: [{ type: "reference", to: [{ type: "project" }] }], group: "content" }),
+    defineField({ name: "order", type: "number", group: "publishing" }),
+    defineField({ name: "seo", type: "seo", group: "seo" }),
+  ],
+  preview: { select: { title: "title", subtitle: "summary" } },
 });
 
 export const testimonial = defineType({

@@ -19,6 +19,7 @@ import type {
   Post,
   Profile,
   Project,
+  Service,
   SiteSettings,
   Skill,
   SkillCategory,
@@ -200,6 +201,20 @@ export async function getMetrics(): Promise<Metric[]> {
   cacheLife("hours");
   cacheTag("achievement");
   return visibleOnly((await fetchSanity<Metric[]>(q.metricsQuery)) ?? seed.metrics, await preview());
+}
+
+export async function getServices(): Promise<Service[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("service");
+  const remote = await fetchSanity<Service[]>(q.servicesQuery);
+  // An empty CMS list falls back to the seed so the page is never blank.
+  const list = remote && remote.length ? remote : seed.services;
+  return list.map((s) => ({ ...s, slug: clean(s.slug), projectSlugs: clean(s.projectSlugs) }));
+}
+
+export async function getService(slug: string) {
+  return (await getServices()).find((s) => s.slug === slug) ?? null;
 }
 
 export async function getNowPage(): Promise<NowPage | null> {

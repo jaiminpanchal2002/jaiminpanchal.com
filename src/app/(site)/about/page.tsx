@@ -9,7 +9,7 @@ import { buttonClass } from "@/components/ui/styles";
 import { getCertifications, getEducation, getExperiences, getProfile } from "@/content/api";
 import { imageUrl } from "@/sanity/image";
 import { jsonLd, pageMetadata, profilePageJsonLd } from "@/lib/seo";
-import { formatMonth, formatRange } from "@/lib/utils";
+import { formatRange } from "@/lib/utils";
 
 export const metadata: Metadata = pageMetadata({
   title: "About",
@@ -115,6 +115,7 @@ export default async function AboutPage() {
                     {e.institution}
                     {e.endYear ? `, ${e.startYear ? `${e.startYear} - ` : ""}${e.endYear}` : ""}
                   </p>
+                  {e.notes && <p className="text-sm text-fg-3">{e.notes}</p>}
                   <VerificationBadge verified={e.verified} className="mt-2" />
                 </li>
               ))}
@@ -127,7 +128,7 @@ export default async function AboutPage() {
                 {certifications.map((c) => (
                   <li key={c._id} className="border-t border-line pt-4">
                     {c.url ? <a href={c.url} target="_blank" rel="noopener noreferrer" className="text-fg underline decoration-accent underline-offset-4">{c.name}</a> : <span className="text-fg">{c.name}</span>}
-                    <p className="text-sm text-fg-2">{c.issuer}{c.issued ? `, ${formatMonth(c.issued)}` : ""}</p>
+                    <p className="text-sm text-fg-2">{c.issuer}{c.issued ? `, ${c.issued}` : ""}</p>
                   </li>
                 ))}
               </ul>

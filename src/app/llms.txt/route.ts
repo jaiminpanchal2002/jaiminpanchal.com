@@ -1,5 +1,5 @@
-import { getExperiences, getPosts, getProfile, getProjects, getSkills } from "@/content/api";
-import { absoluteUrl } from "@/lib/utils";
+import { getExperiences, getPosts, getProfile, getProjects, getServices, getSkills } from "@/content/api";
+import { absoluteUrl, formatRange } from "@/lib/utils";
 
 /**
  * llms.txt (https://llmstxt.org): a plain-markdown summary that AI assistants can read
@@ -7,7 +7,7 @@ import { absoluteUrl } from "@/lib/utils";
  * as the site, so it never says more than the pages do.
  */
 export async function GET() {
-  const [profile, experiences, projects, posts, { skills }] = await Promise.all([getProfile(), getExperiences(), getProjects(), getPosts(), getSkills()]);
+  const [profile, experiences, projects, posts, { skills }, services] = await Promise.all([getProfile(), getExperiences(), getProjects(), getPosts(), getSkills(), getServices()]);
   const verifiedSkills = skills.filter((s) => s.verified).map((s) => s.name);
   const lines = [
     `# ${profile.name}`,
@@ -23,13 +23,19 @@ export async function GET() {
     "- Education: B.Tech in Computer Science and Engineering, Indus University",
     `- Skills: ${verifiedSkills.join(", ")}`,
     ...profile.socialLinks.map((s) => `- ${s.label}: ${s.url}`),
+    "- Awards: Employee of the Quarter (2025) and Emerging Star Award (2024), Sapphire Software Solution",
+    "- Certifications: IBM Project Manager Professional Certificate (2026), Generative AI Mastermind (2026)",
     "",
     "## Experience",
-    ...experiences.filter((e) => e.verified).map((e) => `- ${e.role}, ${e.company}${e.current ? " (current)" : ""}`),
+    ...experiences.filter((e) => e.verified).map((e) => `- ${e.role}, ${e.company} (${formatRange(e.startDate, e.endDate, e.current) ?? ""}): ${e.summary}`),
+    "",
+    "## Services",
+    ...services.map((s) => `- [${s.title}](${absoluteUrl(`/services/${s.slug}`)}): ${s.summary}`),
     "",
     "## Pages",
     `- [About](${absoluteUrl("/about")}): background, principles, education`,
     `- [Experience](${absoluteUrl("/experience")}): roles and responsibilities`,
+    `- [Services](${absoluteUrl("/services")}): what I can build for you`,
     `- [Work](${absoluteUrl("/work")}): projects`,
     `- [Skills](${absoluteUrl("/skills")}): capabilities by area`,
     `- [Writing](${absoluteUrl("/blog")}): articles`,

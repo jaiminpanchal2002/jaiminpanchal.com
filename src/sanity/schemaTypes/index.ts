@@ -15,6 +15,7 @@ import {
   reusableCTA,
   skill,
   skillCategory,
+  service,
   socialLink,
   testimonial,
 } from "./documents";
@@ -44,6 +45,7 @@ export const schemaTypes = [
   skill,
   skillCategory,
   achievement,
+  service,
   testimonial,
   socialLink,
   reusableCTA,

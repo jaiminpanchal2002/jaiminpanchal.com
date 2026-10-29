@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { Post, Profile, Seo } from "@/content/types";
+import type { Post, Profile, Seo, Service } from "@/content/types";
 import { imageUrl } from "@/sanity/image";
 import { absoluteUrl } from "./utils";
 import { DEFAULT_DESCRIPTION, KNOWS_ABOUT, PERSON } from "./site";
@@ -68,6 +68,12 @@ export function personNode(p: Profile) {
       skills: KNOWS_ABOUT.join(", "),
     },
     knowsAbout: KNOWS_ABOUT,
+    award: ["Employee of the Quarter (2025), Sapphire Software Solution", "Emerging Star Award (2024), Sapphire Software Solution"],
+    hasCredential: [
+      { "@type": "EducationalOccupationalCredential", name: "B.Tech in Computer Science and Engineering", credentialCategory: "degree", recognizedBy: { "@type": "CollegeOrUniversity", name: PERSON.alumniOf } },
+      { "@type": "EducationalOccupationalCredential", name: "IBM Project Manager Professional Certificate", credentialCategory: "certificate", recognizedBy: { "@type": "Organization", name: "IBM" } },
+      { "@type": "EducationalOccupationalCredential", name: "Generative AI Mastermind", credentialCategory: "certificate", recognizedBy: { "@type": "Organization", name: "Outskill" } },
+    ],
     sameAs: p.socialLinks.map((s) => s.url),
   };
 }
@@ -109,6 +115,42 @@ export function profilePageJsonLd(p: Profile) {
       personNode(p),
     ],
   };
+}
+
+const AREA_SERVED = [
+  { "@type": "City", name: "Ahmedabad" },
+  { "@type": "Country", name: "India" },
+  { "@type": "Place", name: "Worldwide (remote)" },
+];
+
+function serviceNode(s: Service) {
+  return {
+    "@type": "Service",
+    "@id": absoluteUrl(`/services/${s.slug}#service`),
+    name: s.title,
+    serviceType: s.title,
+    description: s.summary,
+    url: absoluteUrl(`/services/${s.slug}`),
+    provider: { "@id": PERSON_ID() },
+    areaServed: AREA_SERVED,
+    availableChannel: { "@type": "ServiceChannel", serviceUrl: absoluteUrl("/contact") },
+  };
+}
+
+/** /services: the catalogue of services offered by the person. */
+export function servicesJsonLd(services: Service[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "OfferCatalog",
+    name: `Software development services by ${PERSON.name}`,
+    url: absoluteUrl("/services"),
+    provider: { "@id": PERSON_ID() },
+    itemListElement: services.map((s, i) => ({ "@type": "Offer", position: i + 1, itemOffered: serviceNode(s) })),
+  };
+}
+
+export function serviceJsonLd(s: Service) {
+  return { "@context": "https://schema.org", ...serviceNode(s) };
 }
 
 export function articleJsonLd(post: Post, author: string) {

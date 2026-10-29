@@ -26,6 +26,7 @@ export const structure: StructureResolver = (S) =>
       singleton(S, "nowPage", "Now page"),
       S.divider(),
       S.listItem().title("Projects").child(S.list().title("Projects").items([S.documentTypeListItem("project").title("All projects"), S.documentTypeListItem("projectCategory").title("Categories")])),
+      S.documentTypeListItem("service").title("Services"),
       S.documentTypeListItem("caseStudy").title("Case studies"),
       S.listItem().title("Blog").child(S.list().title("Blog").items([S.documentTypeListItem("blogPost").title("Posts"), S.documentTypeListItem("blogCategory").title("Categories"), S.documentTypeListItem("blogTag").title("Tags")])),
       S.listItem()
